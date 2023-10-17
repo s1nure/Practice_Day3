@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Список студентів</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div id="app">
+			<input
+				v-model="search"
+				type="text"
+				class="search_input"
+				placeholder="Пошук за прізвищем"
+			/>
+			<table class="styled-table">
+				<thead>
+					<tr>
+						<th>ПІБ</th>
+						<th>Група</th>
+						<th>Рік народження</th>
+						<th>Практика</th>
+						<th>Дії</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr
+						v-for="student in students"
+						:key="student.id"
+						:class="{ 'highlighted': student.fullName.includes(search) && search !== '' }"
+					>
+						<td>{{ student.fullName }}</td>
+						<td>{{ student.group }}</td>
+						<td>{{ student.birthYear }}</td>
+						<td>
+							<input type="checkbox" v-model="student.passedPractical" class="shorter_input" />
+						</td>
+						<td>
+							<button @click="removeStudent(student.id)">Видалити</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="push-student">
+				<table class="styled-table">
+					<thead>
+						<th>ПІБ</th>
+						<th>Група</th>
+						<th>Рік народження</th>
+						<th>Практика</th>
+					</thead>
+					<tbody>
+						<td><input v-model.trim="fullNameStudent" type="text" class="push_input"/></td>
+						<td>
+							<select v-model.lazy="selectedGroup" class="push_input">
+								<option value="1">Група 1</option>
+								<option value="2">Група 2</option>
+							</select>
+						</td>
+						<td><input v-model.number="birthOfYear" type="number" class="push_input"/></td>
+						<td>
+							<input
+								v-model.lazy="checkbox_practice" class="shorter_input push_input"
+								type="checkbox"
+								name="practitce"
+								id="checkbox_practice"
+							/>
+						</td>
+					</tbody>
+				</table>
+				<button @click="addStudent()" class="button_view button_push">Додати студента</button>
+			</div>
+			<a href="index1.html"><button class="button_view">Vue 3</button></a>
+		</div>
+
+		<script>
+			new Vue({
+				el: '#app',
+				data: {
+					search: '',
+					students: [
+						{
+							id: 1,
+							fullName: 'Іванов Іван',
+							group: 'Група 1',
+							birthYear: 1995,
+							passedPractical: true,
+						},
+						{
+							id: 2,
+							fullName: 'Петров Петро',
+							group: 'Група 2',
+							birthYear: 1996,
+							passedPractical: false,
+						},
+						{
+							id: 3,
+							fullName: 'Сидорова Марія',
+							group: 'Група 1',
+							birthYear: 1997,
+							passedPractical: true,
+						},
+						{
+							id: 4,
+							fullName: 'Семенов Сергій',
+							group: 'Група 2',
+							birthYear: 1998,
+							passedPractical: false,
+						},
+						{
+							id: 5,
+							fullName: 'Божок Богдан',
+							group: 'Група 1',
+							birthYear: 1998,
+							passedPractical: false,
+						},
+						{
+							id: 6,
+							fullName: 'Степура Глеб ',
+							group: 'Група 2',
+							birthYear: 1998,
+							passedPractical: true,
+						},
+						{
+							id: 7,
+							fullName: 'Кулішенко Лев',
+							group: 'Група 2',
+							birthYear: 1998,
+							passedPractical: true,
+						},
+						{
+							id: 8,
+							fullName: 'Бабко Тимур',
+							group: 'Група 1',
+							birthYear: 1998,
+							passedPractical: false,
+						},
+					],
+					fullNameStudent: '',
+					selectedGroup: 1,
+					birthOfYear: 1990,
+					checkbox_practice: false,
+				},
+				methods: {
+					removeStudent: function (id) {
+						const index = this.students.findIndex(student => student.id === id)
+						if (index !== -1) {
+							this.students.splice(index, 1)
+						}
+					},
+					addStudent: function () {
+						if (!this.fullNameStudent) {
+							console.log('fullNameStudent: ' + this.fullNameStudent)
+							return
+						}
+						if (!this.selectedGroup) {
+							console.log('selectedGroup')
+							return
+						}
+						if (this.birthOfYear < 1950 || this.birthOfYear > 2008) {
+							console.log('birthOfYear не в діапазоні від 1950 до 2008')
+							return
+						}
+
+						const id = this.students.length + 1
+						console.log({
+							id: id,
+							fullName: this.fullNameStudent,
+							group: this.selectedGroup,
+							birthYear: this.birthOfYear,
+							passedPractical: this.checkbox_practice,
+						})
+						this.students.push({
+							id: id,
+							fullName: this.fullNameStudent,
+							group: 'Група ' + this.selectedGroup,
+							birthYear: this.birthOfYear,
+							passedPractical: this.checkbox_practice,
+						})
+					},
+				},
+			})
+		</script>
+	</body>
+</html>
